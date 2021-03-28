@@ -35,3 +35,5 @@ lerna-debug.log*
 
 .env
 docker.env
+
+prisma/schema.prisma
