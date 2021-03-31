@@ -20,6 +20,19 @@ export class UsersService {
     return user;
   }
 
+  async getById(id: number) {
+    const user = await this.prismaService.user.findUnique({
+      where: {
+        id,
+      },
+    });
+    if (!user) {
+      throw new UserNotFoundException();
+    }
+
+    return user;
+  }
+
   async create(user: CreateUserDto) {
     return this.prismaService.user.create({
       data: user,

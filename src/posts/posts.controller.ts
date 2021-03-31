@@ -14,8 +14,7 @@ import { FindOneParams } from '../utils/findOneParams';
 
 @Controller('posts')
 export default class PostsController {
-  constructor(private readonly postsService: PostsService) {
-  }
+  constructor(private readonly postsService: PostsService) {}
 
   @Get()
   async getPosts() {
