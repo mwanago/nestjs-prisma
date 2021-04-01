@@ -3,4 +3,5 @@ model Address {
   street    String
   city      String
   country   String
+  user      User?
 }
