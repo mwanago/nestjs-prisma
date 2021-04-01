@@ -5,6 +5,7 @@ import { UpdatePostDto } from './dto/updatePost.dto';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 import { PrismaError } from '../utils/prismaError';
 import { PostNotFoundException } from './exceptions/postNotFound.exception';
+import { User } from '@prisma/client';
 
 @Injectable()
 export class PostsService {
@@ -26,9 +27,12 @@ export class PostsService {
     return post;
   }
 
-  async createPost(post: CreatePostDto) {
+  async createPost(post: CreatePostDto, user: User) {
     return this.prismaService.post.create({
-      data: post,
+      data: {
+        ...post,
+        authorId: user.id,
+      },
     });
   }
 

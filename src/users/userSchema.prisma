@@ -5,4 +5,5 @@ model User {
   password      String
   address       Address?     @relation(fields: [addressId], references: [id])
   addressId     Int?
+  posts         Post[]
 }

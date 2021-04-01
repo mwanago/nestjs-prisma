@@ -2,4 +2,6 @@ model Post {
   id        Int      @default(autoincrement()) @id
   title     String
   content   String
+  author    User  @relation(fields: [authorId], references: [id])
+  authorId  Int
 }
