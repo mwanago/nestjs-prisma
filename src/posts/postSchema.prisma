@@ -4,4 +4,5 @@ model Post {
   content   String
   author    User  @relation(fields: [authorId], references: [id])
   authorId  Int
+  categories Category[]
 }
