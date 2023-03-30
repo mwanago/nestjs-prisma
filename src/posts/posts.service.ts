@@ -11,6 +11,22 @@ import { User } from '@prisma/client';
 export class PostsService {
   constructor(private readonly prismaService: PrismaService) {}
 
+  async getPosts() {
+    return this.prismaService.post.findMany();
+  }
+
+  async getPostById(id: number) {
+    const post = await this.prismaService.post.findUnique({
+      where: {
+        id,
+      },
+    });
+    if (!post) {
+      throw new PostNotFoundException(id);
+    }
+    return post;
+  }
+
   async createPost(post: CreatePostDto, user: User) {
     const categories = post.categoryIds?.map((category) => ({
       id: category,
