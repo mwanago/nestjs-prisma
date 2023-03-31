@@ -9,21 +9,11 @@ import { UserNotFoundException } from '../users/exceptions/userNotFound.exceptio
 import { BadRequestException } from '@nestjs/common';
 
 describe('The AuthenticationService', () => {
-  let userData: User;
   let authenticationService: AuthenticationService;
   let password: string;
   let getByEmailMock: jest.Mock;
   beforeEach(async () => {
     getByEmailMock = jest.fn();
-    password = 'strongPassword123';
-    const hashedPassword = await bcrypt.hash(password, 10);
-    userData = {
-      id: 1,
-      email: 'john@smith.com',
-      name: 'John',
-      password: hashedPassword,
-      addressId: null,
-    };
     const module = await Test.createTestingModule({
       providers: [
         AuthenticationService,
@@ -52,7 +42,17 @@ describe('The AuthenticationService', () => {
   });
   describe('when the getAuthenticatedUser method is called', () => {
     describe('and a valid email and password are provided', () => {
-      beforeEach(() => {
+      let userData: User;
+      beforeEach(async () => {
+        password = 'strongPassword123';
+        const hashedPassword = await bcrypt.hash(password, 10);
+        userData = {
+          id: 1,
+          email: 'john@smith.com',
+          name: 'John',
+          password: hashedPassword,
+          addressId: null,
+        };
         getByEmailMock.mockResolvedValue(userData);
       });
       it('should return the new user', async () => {
@@ -70,7 +70,7 @@ describe('The AuthenticationService', () => {
       it('should throw the BadRequestException', () => {
         return expect(async () => {
           await authenticationService.getAuthenticatedUser(
-            userData.email,
+            'john@smith.com',
             password,
           );
         }).rejects.toThrow(BadRequestException);
