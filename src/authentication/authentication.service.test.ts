@@ -5,12 +5,16 @@ import { Test } from '@nestjs/testing';
 import { UsersService } from '../users/users.service';
 import { User } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
+import { UserNotFoundException } from '../users/exceptions/userNotFound.exception';
+import { BadRequestException } from '@nestjs/common';
 
 describe('The AuthenticationService', () => {
   let userData: User;
   let authenticationService: AuthenticationService;
   let password: string;
+  let getByEmailMock: jest.Mock;
   beforeEach(async () => {
+    getByEmailMock = jest.fn();
     password = 'strongPassword123';
     const hashedPassword = await bcrypt.hash(password, 10);
     userData = {
@@ -26,7 +30,7 @@ describe('The AuthenticationService', () => {
         {
           provide: UsersService,
           useValue: {
-            getByEmail: jest.fn().mockReturnValue(userData),
+            getByEmail: getByEmailMock,
           },
         },
       ],
@@ -48,12 +52,28 @@ describe('The AuthenticationService', () => {
   });
   describe('when the getAuthenticatedUser method is called', () => {
     describe('and a valid email and password are provided', () => {
+      beforeEach(() => {
+        getByEmailMock.mockResolvedValue(userData);
+      });
       it('should return the new user', async () => {
         const result = await authenticationService.getAuthenticatedUser(
           userData.email,
           password,
         );
         expect(result).toBe(userData);
+      });
+    });
+    describe('and an invalid email is provided', () => {
+      beforeEach(() => {
+        getByEmailMock.mockRejectedValue(new UserNotFoundException());
+      });
+      it('should throw the BadRequestException', () => {
+        return expect(async () => {
+          await authenticationService.getAuthenticatedUser(
+            userData.email,
+            password,
+          );
+        }).rejects.toThrow(BadRequestException);
       });
     });
   });
