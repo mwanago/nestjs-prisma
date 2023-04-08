@@ -97,5 +97,16 @@ describe('The AuthenticationController', () => {
         });
       });
     });
+    describe('and the email is missing', () => {
+      it('should result in 400 Bad Request', async () => {
+        return request(app.getHttpServer())
+          .post('/authentication/register')
+          .send({
+            name: 'John',
+            password: 'strongPassword',
+          })
+          .expect(400);
+      });
+    });
   });
 });
