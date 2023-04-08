@@ -10,8 +10,8 @@ import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import TokenPayload from './tokenPayload.interface';
-import PostgresErrorCode from '../utils/postgresErrorCode.enum';
 import { UserNotFoundException } from '../users/exceptions/userNotFound.exception';
+import { PrismaError } from '../prisma/prismaError';
 
 @Injectable()
 export class AuthenticationService {
@@ -31,7 +31,7 @@ export class AuthenticationService {
       createdUser.password = undefined;
       return createdUser;
     } catch (error) {
-      if (error?.code === PostgresErrorCode.UniqueViolation) {
+      if (error?.code === PrismaError.UniqueConstraintFailed) {
         throw new HttpException(
           'User with that email already exists',
           HttpStatus.BAD_REQUEST,
