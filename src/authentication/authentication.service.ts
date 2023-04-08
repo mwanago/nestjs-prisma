@@ -11,6 +11,7 @@ import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import TokenPayload from './tokenPayload.interface';
 import PostgresErrorCode from '../utils/postgresErrorCode.enum';
+import { UserNotFoundException } from '../users/exceptions/userNotFound.exception';
 
 @Injectable()
 export class AuthenticationService {
@@ -61,7 +62,10 @@ export class AuthenticationService {
       await this.verifyPassword(plainTextPassword, user.password);
       return user;
     } catch (error) {
-      throw new BadRequestException();
+      if (error instanceof UserNotFoundException) {
+        throw new BadRequestException();
+      }
+      throw error;
     }
   }
 
@@ -74,10 +78,7 @@ export class AuthenticationService {
       hashedPassword,
     );
     if (!isPasswordMatching) {
-      throw new HttpException(
-        'Wrong credentials provided',
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new BadRequestException('Wrong credentials provided');
     }
   }
 }
