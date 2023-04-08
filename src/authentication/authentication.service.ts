@@ -11,7 +11,7 @@ import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import TokenPayload from './tokenPayload.interface';
 import { UserNotFoundException } from '../users/exceptions/userNotFound.exception';
-import { PrismaError } from '../prisma/prismaError';
+import { PrismaError } from '../utils/prismaError';
 
 @Injectable()
 export class AuthenticationService {
