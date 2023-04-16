@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreatePostDto } from './dto/createPost.dto';
 import { UpdatePostDto } from './dto/updatePost.dto';
@@ -92,12 +92,17 @@ export class PostsService {
   }
 
   deleteMultiplePosts(ids: number[]) {
-    return this.prismaService.post.deleteMany({
-      where: {
-        id: {
-          in: ids,
+    return this.prismaService.$transaction(async (prismaClient) => {
+      const deleteResponse = await prismaClient.post.deleteMany({
+        where: {
+          id: {
+            in: ids,
+          },
         },
-      },
+      });
+      if (deleteResponse.count !== ids.length) {
+        throw new NotFoundException('One of the posts cold not be found');
+      }
     });
   }
 }
