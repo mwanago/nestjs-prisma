@@ -92,8 +92,8 @@ export class PostsService {
   }
 
   deleteMultiplePosts(ids: number[]) {
-    return this.prismaService.$transaction(async (prismaClient) => {
-      const deleteResponse = await prismaClient.post.deleteMany({
+    return this.prismaService.$transaction(async (transactionClient) => {
+      const deleteResponse = await transactionClient.post.deleteMany({
         where: {
           id: {
             in: ids,
@@ -101,7 +101,7 @@ export class PostsService {
         },
       });
       if (deleteResponse.count !== ids.length) {
-        throw new NotFoundException('One of the posts cold not be found');
+        throw new NotFoundException('One of the posts cold not be deleted');
       }
     });
   }
