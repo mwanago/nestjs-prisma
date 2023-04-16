@@ -10,8 +10,25 @@ import { PrismaError } from '../utils/prismaError';
 export default class CategoriesService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  getAllCategories() {
-    return this.prismaService.category.findMany();
+  async deleteCategoryWithPosts(id: number) {
+    const category = await this.getCategoryById(id);
+
+    const postIds = category.posts.map((post) => post.id);
+
+    await this.prismaService.$transaction([
+      this.prismaService.post.deleteMany({
+        where: {
+          id: {
+            in: postIds,
+          },
+        },
+      }),
+      this.prismaService.category.delete({
+        where: {
+          id,
+        },
+      }),
+    ]);
   }
 
   async getCategoryById(id: number) {
@@ -19,11 +36,18 @@ export default class CategoriesService {
       where: {
         id,
       },
+      include: {
+        posts: true,
+      },
     });
     if (!category) {
       throw new CategoryNotFoundException(id);
     }
     return category;
+  }
+
+  getAllCategories() {
+    return this.prismaService.category.findMany();
   }
 
   async createCategory(category: CreateCategoryDto) {
@@ -56,7 +80,7 @@ export default class CategoriesService {
 
   async deleteCategory(id: number) {
     try {
-      return this.prismaService.category.delete({
+      return await this.prismaService.category.delete({
         where: {
           id,
         },

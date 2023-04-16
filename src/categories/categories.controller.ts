@@ -47,6 +47,6 @@ export default class CategoriesController {
 
   @Delete(':id')
   async deleteCategory(@Param() { id }: FindOneParams) {
-    return this.categoriesService.deleteCategory(id);
+    return this.categoriesService.deleteCategoryWithPosts(id);
   }
 }
