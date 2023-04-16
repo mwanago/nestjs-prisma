@@ -91,7 +91,7 @@ export class PostsService {
     }
   }
 
-  async deleteMultiplePosts(ids: number[]) {
+  deleteMultiplePosts(ids: number[]) {
     return this.prismaService.post.deleteMany({
       where: {
         id: {
