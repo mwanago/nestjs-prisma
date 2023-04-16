@@ -90,4 +90,14 @@ export class PostsService {
       throw error;
     }
   }
+
+  async deleteMultiplePosts(ids: number[]) {
+    return this.prismaService.post.deleteMany({
+      where: {
+        id: {
+          in: ids,
+        },
+      },
+    });
+  }
 }
