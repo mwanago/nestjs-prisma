@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   Req,
   UseGuards,
 } from '@nestjs/common';
@@ -15,13 +16,17 @@ import { UpdatePostDto } from './dto/updatePost.dto';
 import { FindOneParams } from '../utils/findOneParams';
 import JwtAuthenticationGuard from '../authentication/jwt-authentication.guard';
 import RequestWithUser from '../authentication/requestWithUser.interface';
+import { AuthorIdQueryDto } from './dto/authorIdQuery.dto';
 
 @Controller('posts')
 export default class PostsController {
   constructor(private readonly postsService: PostsService) {}
 
   @Get()
-  async getPosts() {
+  async getPosts(@Query() { authorId }: AuthorIdQueryDto) {
+    if (authorId !== undefined) {
+      return this.postsService.getPostsByAuthor(authorId);
+    }
     return this.postsService.getPosts();
   }
 

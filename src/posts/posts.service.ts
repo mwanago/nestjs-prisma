@@ -15,6 +15,14 @@ export class PostsService {
     return this.prismaService.post.findMany();
   }
 
+  getPostsByAuthor(authorId: number) {
+    return this.prismaService.post.findMany({
+      where: {
+        authorId,
+      },
+    });
+  }
+
   async getPostById(id: number) {
     const post = await this.prismaService.post.findUnique({
       where: {
