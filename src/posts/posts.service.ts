@@ -12,20 +12,40 @@ export class PostsService {
   constructor(private readonly prismaService: PrismaService) {}
 
   async getPosts(offset?: number, limit?: number) {
-    return this.prismaService.post.findMany({
-      take: limit,
-      skip: offset,
-    });
+    const [count, items] = await this.prismaService.$transaction([
+      this.prismaService.post.count(),
+      this.prismaService.post.findMany({
+        take: limit,
+        skip: offset,
+      }),
+    ]);
+
+    return {
+      count,
+      items,
+    };
   }
 
-  getPostsByAuthor(authorId: number, offset?: number, limit?: number) {
-    return this.prismaService.post.findMany({
-      take: limit,
-      skip: offset,
-      where: {
-        authorId,
-      },
-    });
+  async getPostsByAuthor(authorId: number, offset?: number, limit?: number) {
+    const [count, items] = await this.prismaService.$transaction([
+      this.prismaService.post.count({
+        where: {
+          authorId,
+        },
+      }),
+      this.prismaService.post.findMany({
+        take: limit,
+        skip: offset,
+        where: {
+          authorId,
+        },
+      }),
+    ]);
+
+    return {
+      count,
+      items,
+    };
   }
 
   async getPostById(id: number) {
