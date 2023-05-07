@@ -11,12 +11,17 @@ import { User } from '@prisma/client';
 export class PostsService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async getPosts() {
-    return this.prismaService.post.findMany();
+  async getPosts(offset?: number, limit?: number) {
+    return this.prismaService.post.findMany({
+      take: limit,
+      skip: offset,
+    });
   }
 
-  getPostsByAuthor(authorId: number) {
+  getPostsByAuthor(authorId: number, offset?: number, limit?: number) {
     return this.prismaService.post.findMany({
+      take: limit,
+      skip: offset,
       where: {
         authorId,
       },

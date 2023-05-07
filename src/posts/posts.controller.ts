@@ -17,17 +17,21 @@ import { FindOneParams } from '../utils/findOneParams';
 import JwtAuthenticationGuard from '../authentication/jwt-authentication.guard';
 import RequestWithUser from '../authentication/requestWithUser.interface';
 import { AuthorIdQueryDto } from './dto/authorIdQuery.dto';
+import { PaginationParamsDto } from './dto/paginationParams.dto';
 
 @Controller('posts')
 export default class PostsController {
   constructor(private readonly postsService: PostsService) {}
 
   @Get()
-  async getPosts(@Query() { authorId }: AuthorIdQueryDto) {
+  async getPosts(
+    @Query() { authorId }: AuthorIdQueryDto,
+    @Query() { offset, limit }: PaginationParamsDto,
+  ) {
     if (authorId !== undefined) {
-      return this.postsService.getPostsByAuthor(authorId);
+      return this.postsService.getPostsByAuthor(authorId, offset, limit);
     }
-    return this.postsService.getPosts();
+    return this.postsService.getPosts(offset, limit);
   }
 
   @Get(':id')
