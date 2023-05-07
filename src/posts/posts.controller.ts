@@ -26,12 +26,12 @@ export default class PostsController {
   @Get()
   async getPosts(
     @Query() { authorId }: AuthorIdQueryDto,
-    @Query() { offset, limit }: PaginationParamsDto,
+    @Query() paginationParams: PaginationParamsDto,
   ) {
     if (authorId !== undefined) {
-      return this.postsService.getPostsByAuthor(authorId, offset, limit);
+      return this.postsService.getPostsByAuthor(authorId, paginationParams);
     }
-    return this.postsService.getPosts(offset, limit);
+    return this.postsService.getPosts(paginationParams);
   }
 
   @Get(':id')

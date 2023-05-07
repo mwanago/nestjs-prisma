@@ -13,4 +13,10 @@ export class PaginationParamsDto {
   @IsNumber()
   @Min(1)
   limit?: number;
+
+  @IsOptional()
+  @Transform(({ value }) => Number(value))
+  @IsNumber()
+  @Min(1)
+  startingId?: number;
 }

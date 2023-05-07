@@ -6,17 +6,21 @@ import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 import { PrismaError } from '../utils/prismaError';
 import { PostNotFoundException } from './exceptions/postNotFound.exception';
 import { User } from '@prisma/client';
+import { PaginationParamsDto } from './dto/paginationParams.dto';
 
 @Injectable()
 export class PostsService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async getPosts(offset?: number, limit?: number) {
+  async getPosts({ limit, offset, startingId }: PaginationParamsDto) {
     const [count, items] = await this.prismaService.$transaction([
       this.prismaService.post.count(),
       this.prismaService.post.findMany({
         take: limit,
         skip: offset,
+        cursor: {
+          id: startingId ?? 1,
+        },
       }),
     ]);
 
@@ -26,7 +30,10 @@ export class PostsService {
     };
   }
 
-  async getPostsByAuthor(authorId: number, offset?: number, limit?: number) {
+  async getPostsByAuthor(
+    authorId: number,
+    { limit, offset, startingId }: PaginationParamsDto,
+  ) {
     const [count, items] = await this.prismaService.$transaction([
       this.prismaService.post.count({
         where: {
@@ -38,6 +45,9 @@ export class PostsService {
         skip: offset,
         where: {
           authorId,
+        },
+        cursor: {
+          id: startingId ?? 1,
         },
       }),
     ]);
