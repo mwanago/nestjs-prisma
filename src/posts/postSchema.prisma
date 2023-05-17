@@ -6,5 +6,7 @@ model Post {
   authorId   Int
   categories Category[]
 
+  scheduledDate DateTime? @db.Timestamptz
+
   @@index([authorId])
 }
