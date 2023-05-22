@@ -8,7 +8,7 @@ export class UpdatePostDto {
   @IsNotEmpty()
   title: string;
 
-  @IsString()
+  @IsString({ each: true })
   @IsNotEmpty()
-  content: string;
+  paragraphs: string[];
 }

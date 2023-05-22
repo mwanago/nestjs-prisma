@@ -1,12 +1,14 @@
 model Post {
   id         Int        @id @default(autoincrement())
   title      String
-  content    String
+  paragraphs String[]
   author     User       @relation(fields: [authorId], references: [id])
   authorId   Int
   categories Category[]
 
   scheduledDate DateTime? @db.Timestamptz
+
+  data Json?
 
   @@index([authorId])
 }
