@@ -78,7 +78,7 @@ export class PostsService {
     return this.prismaService.post.create({
       data: {
         title: post.title,
-        content: post.content,
+        paragraphs: post.paragraphs,
         scheduledDate: post.scheduledDate,
         author: {
           connect: {
