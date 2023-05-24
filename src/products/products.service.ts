@@ -4,6 +4,7 @@ import UpdateProductDto from './dto/updateProduct.dto';
 import { PrismaService } from '../prisma/prisma.service';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 import { PrismaError } from '../utils/prismaError';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export default class ProductsService {
@@ -22,7 +23,14 @@ export default class ProductsService {
   }
 
   getAllProducts() {
-    return this.prismaService.product.findMany();
+    this.prismaService.product.findMany({
+      where: {
+        properties: {
+          path: ['publicationYear'],
+          lt: 2000,
+        },
+      },
+    });
   }
 
   async createProduct(product: CreateProductDto) {
@@ -37,6 +45,7 @@ export default class ProductsService {
         data: {
           ...product,
           id: undefined,
+          properties: product.properties ?? Prisma.DbNull,
         },
         where: {
           id,
