@@ -31,8 +31,10 @@ export class AuthenticationController {
     const { user } = request;
     const cookie = this.authenticationService.getCookieWithJwtToken(user.id);
     response.setHeader('Set-Cookie', cookie);
-    user.password = undefined;
-    return response.send(user);
+    return response.send({
+      ...user,
+      password: undefined,
+    });
   }
 
   @UseGuards(JwtAuthenticationGuard)
@@ -48,8 +50,9 @@ export class AuthenticationController {
   @UseGuards(JwtAuthenticationGuard)
   @Get()
   authenticate(@Req() request: RequestWithUser) {
-    const user = request.user;
-    user.password = undefined;
-    return user;
+    return {
+      ...request.user,
+      password: undefined,
+    };
   }
 }

@@ -12,6 +12,7 @@ import { ConfigService } from '@nestjs/config';
 import TokenPayload from './tokenPayload.interface';
 import { UserNotFoundException } from '../users/exceptions/userNotFound.exception';
 import { PrismaError } from '../utils/prismaError';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class AuthenticationService {
@@ -28,10 +29,15 @@ export class AuthenticationService {
         ...registrationData,
         password: hashedPassword,
       });
-      createdUser.password = undefined;
-      return createdUser;
+      return {
+        ...createdUser,
+        password: undefined,
+      };
     } catch (error) {
-      if (error?.code === PrismaError.UniqueConstraintFailed) {
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error?.code === PrismaError.UniqueConstraintFailed
+      ) {
         throw new HttpException(
           'User with that email already exists',
           HttpStatus.BAD_REQUEST,

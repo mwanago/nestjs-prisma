@@ -3,7 +3,7 @@ import CreateCategoryDto from './dto/createCategory.dto';
 import UpdateCategoryDto from './dto/updateCategory.dto';
 import CategoryNotFoundException from './exceptions/categoryNotFound.exception';
 import { PrismaService } from '../prisma/prisma.service';
-import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
+import { Prisma } from '@prisma/client';
 import { PrismaError } from '../utils/prismaError';
 
 @Injectable()
@@ -69,7 +69,7 @@ export default class CategoriesService {
       });
     } catch (error) {
       if (
-        error instanceof PrismaClientKnownRequestError &&
+        error instanceof Prisma.PrismaClientKnownRequestError &&
         error.code === PrismaError.RecordDoesNotExist
       ) {
         throw new CategoryNotFoundException(id);
@@ -87,7 +87,7 @@ export default class CategoriesService {
       });
     } catch (error) {
       if (
-        error instanceof PrismaClientKnownRequestError &&
+        error instanceof Prisma.PrismaClientKnownRequestError &&
         error.code === PrismaError.RecordDoesNotExist
       ) {
         throw new CategoryNotFoundException(id);

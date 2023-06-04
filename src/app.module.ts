@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { PostsModule } from './posts/posts.module';
 import { ConfigModule } from '@nestjs/config';
-import * as Joi from '@hapi/joi';
+import * as Joi from 'joi';
 import { AuthenticationModule } from './authentication/authentication.module';
 import { CategoriesModule } from './categories/categories.module';
 import { ProductsModule } from './products/products.module';
