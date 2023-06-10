@@ -1,4 +1,10 @@
-import { IsString, IsNotEmpty, IsOptional } from 'class-validator';
+import {
+  IsString,
+  IsNotEmpty,
+  IsOptional,
+  IsNumber,
+  IsPositive,
+} from 'class-validator';
 import IsJsonObject from '../../utils/isJsonObject';
 import { Prisma } from '@prisma/client';
 
@@ -11,6 +17,11 @@ export class CreateProductDto {
   @IsJsonObject()
   @IsOptional()
   properties?: Prisma.InputJsonObject;
+
+  @IsNumber()
+  @IsOptional()
+  @IsPositive()
+  price?: number;
 }
 
 export default CreateProductDto;
