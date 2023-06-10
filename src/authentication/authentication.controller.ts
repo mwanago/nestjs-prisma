@@ -18,6 +18,7 @@ import { LocalAuthenticationGuard } from './localAuthentication.guard';
 import JwtAuthenticationGuard from './jwt-authentication.guard';
 import { UserResponseDto } from '../users/dto/userResponseDto';
 import { plainToClass } from 'class-transformer';
+import { TransformDataInterceptor } from '../utils/transformData.interceptor';
 
 @Controller('authentication')
 @UseInterceptors(ClassSerializerInterceptor)
@@ -53,8 +54,9 @@ export class AuthenticationController {
   }
 
   @UseGuards(JwtAuthenticationGuard)
+  @UseInterceptors(new TransformDataInterceptor(UserResponseDto))
   @Get()
   authenticate(@Req() request: RequestWithUser) {
-    return plainToClass(UserResponseDto, request.user);
+    return request.user;
   }
 }
