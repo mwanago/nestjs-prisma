@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { LogLevel, ValidationPipe } from '@nestjs/common';
 import * as cookieParser from 'cookie-parser';
+import { LoggerInterceptor } from './utils/logger.interceptor';
 
 async function bootstrap() {
   const isProduction = process.env.NODE_ENV === 'production';
@@ -20,6 +21,8 @@ async function bootstrap() {
       transform: true,
     }),
   );
+
+  app.useGlobalInterceptors(new LoggerInterceptor());
 
   await app.listen(3000);
 }
