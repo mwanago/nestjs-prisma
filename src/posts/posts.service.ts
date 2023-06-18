@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreatePostDto } from './dto/createPost.dto';
 import { UpdatePostDto } from './dto/updatePost.dto';
@@ -10,6 +10,8 @@ import { PaginationParamsDto } from './dto/paginationParams.dto';
 
 @Injectable()
 export class PostsService {
+  private readonly logger = new Logger(PostsService.name);
+
   constructor(private readonly prismaService: PrismaService) {}
 
   async getPosts({ limit, offset, startingId }: PaginationParamsDto) {
@@ -65,6 +67,7 @@ export class PostsService {
       },
     });
     if (!post) {
+      this.logger.warn('Tried to get a post that does not exist');
       throw new PostNotFoundException(id);
     }
     return post;
