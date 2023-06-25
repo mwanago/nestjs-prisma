@@ -1,4 +1,10 @@
-import {IsString, IsNotEmpty, IsNumber, IsOptional, IsISO8601} from 'class-validator';
+import {
+  IsString,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsISO8601,
+} from 'class-validator';
 
 export class ReplacePostDto {
   @IsNumber()

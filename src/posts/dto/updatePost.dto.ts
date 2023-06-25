@@ -1,14 +1,26 @@
-import { IsString, IsNotEmpty, IsNumber } from 'class-validator';
+import { IsString, IsNotEmpty, IsNumber, IsISO8601 } from 'class-validator';
+import { CanBeUndefined } from '../../utils/canBeUndefined';
+import { CanBeNull } from '../../utils/canBeNull';
 
 export class UpdatePostDto {
   @IsNumber()
-  id: number;
+  @CanBeUndefined()
+  id?: number;
 
   @IsString()
   @IsNotEmpty()
-  title: string;
+  @CanBeUndefined()
+  title?: string;
 
   @IsString({ each: true })
   @IsNotEmpty()
-  paragraphs: string[];
+  @CanBeUndefined()
+  paragraphs?: string[];
+
+  @IsISO8601({
+    strict: true,
+  })
+  @CanBeUndefined()
+  @CanBeNull()
+  scheduledDate?: string | null;
 }
