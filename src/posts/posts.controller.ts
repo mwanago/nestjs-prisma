@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Put,
   Query,
   Req,
   UseGuards,
@@ -18,6 +19,7 @@ import JwtAuthenticationGuard from '../authentication/jwt-authentication.guard';
 import RequestWithUser from '../authentication/requestWithUser.interface';
 import { AuthorIdQueryDto } from './dto/authorIdQuery.dto';
 import { PaginationParamsDto } from './dto/paginationParams.dto';
+import { ReplacePostDto } from './dto/replacePost.dto';
 
 @Controller('posts')
 export default class PostsController {
@@ -51,6 +53,14 @@ export default class PostsController {
     @Body() post: UpdatePostDto,
   ) {
     return this.postsService.updatePost(id, post);
+  }
+
+  @Put(':id')
+  async replacePost(
+    @Param() { id }: FindOneParams,
+    @Body() post: ReplacePostDto,
+  ) {
+    return this.postsService.replacePost(id, post);
   }
 
   @Delete(':id')

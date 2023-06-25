@@ -7,6 +7,7 @@ import { PrismaError } from '../utils/prismaError';
 import { PostNotFoundException } from './exceptions/postNotFound.exception';
 import { User } from '@prisma/client';
 import { PaginationParamsDto } from './dto/paginationParams.dto';
+import { ReplacePostDto } from './dto/replacePost.dto';
 
 @Injectable()
 export class PostsService {
@@ -96,6 +97,28 @@ export class PostsService {
         categories: true,
       },
     });
+  }
+
+  async replacePost(id: number, post: ReplacePostDto) {
+    try {
+      return await this.prismaService.post.update({
+        data: {
+          ...post,
+          id: undefined,
+        },
+        where: {
+          id,
+        },
+      });
+    } catch (error) {
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === PrismaError.RecordDoesNotExist
+      ) {
+        throw new PostNotFoundException(id);
+      }
+      throw error;
+    }
   }
 
   async updatePost(id: number, post: UpdatePostDto) {
