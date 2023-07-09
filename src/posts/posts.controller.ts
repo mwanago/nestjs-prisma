@@ -21,7 +21,10 @@ import { AuthorIdQueryDto } from './dto/authorIdQuery.dto';
 import { PaginationParamsDto } from './dto/paginationParams.dto';
 import { ReplacePostDto } from './dto/replacePost.dto';
 
-@Controller('posts')
+@Controller({
+  version: '2',
+  path: 'posts',
+})
 export default class PostsController {
   constructor(private readonly postsService: PostsService) {}
 

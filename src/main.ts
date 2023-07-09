@@ -1,6 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { LogLevel, ValidationPipe } from '@nestjs/common';
+import { LogLevel, ValidationPipe, VersioningType } from '@nestjs/common';
 import * as cookieParser from 'cookie-parser';
 import { LoggerInterceptor } from './utils/logger.interceptor';
 
@@ -23,6 +23,10 @@ async function bootstrap() {
   );
 
   app.useGlobalInterceptors(new LoggerInterceptor());
+
+  app.enableVersioning({
+    type: VersioningType.URI,
+  });
 
   await app.listen(3000);
 }
