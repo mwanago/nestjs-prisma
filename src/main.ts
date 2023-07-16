@@ -34,6 +34,7 @@ async function bootstrap() {
   if (frontendUrl) {
     app.enableCors({
       origin: configService.get('FRONTEND_URL'),
+      credentials: true,
     });
   }
 
