@@ -20,6 +20,7 @@ import { ProductsModule } from './products/products.module';
         POSTGRES_DB: Joi.string().required(),
         JWT_SECRET: Joi.string().required(),
         JWT_EXPIRATION_TIME: Joi.string().required(),
+        FRONTEND_URL: Joi.string(),
       }),
     }),
     ProductsModule,

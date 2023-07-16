@@ -3,6 +3,7 @@ import { AppModule } from './app.module';
 import { LogLevel, ValidationPipe, VersioningType } from '@nestjs/common';
 import * as cookieParser from 'cookie-parser';
 import { LoggerInterceptor } from './utils/logger.interceptor';
+import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
   const isProduction = process.env.NODE_ENV === 'production';
@@ -27,6 +28,14 @@ async function bootstrap() {
   app.enableVersioning({
     type: VersioningType.URI,
   });
+
+  const configService = app.get(ConfigService);
+  const frontendUrl = configService.get('FRONTEND_URL');
+  if (frontendUrl) {
+    app.enableCors({
+      origin: configService.get('FRONTEND_URL'),
+    });
+  }
 
   await app.listen(3000);
 }
