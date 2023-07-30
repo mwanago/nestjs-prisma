@@ -4,10 +4,13 @@ import {
   UseInterceptors,
   UploadedFile,
   BadRequestException,
+  Get,
+  Param,
 } from '@nestjs/common';
 import { Express } from 'express';
 import LocalFilesInterceptor from '../utils/localFiles.interceptor';
 import { VideosService } from './videos.service';
+import { FindOneParams } from '../utils/findOneParams';
 
 @Controller('videos')
 export default class VideosController {
@@ -29,11 +32,16 @@ export default class VideosController {
       },
     }),
   )
-  async addVideo(@UploadedFile() file: Express.Multer.File) {
+  addVideo(@UploadedFile() file: Express.Multer.File) {
     return this.videosService.create({
       filename: file.originalname,
       path: file.path,
       mimetype: file.mimetype,
     });
+  }
+
+  @Get(':id')
+  streamVideo(@Param() { id }: FindOneParams) {
+    return this.videosService.streamVideoById(id);
   }
 }
