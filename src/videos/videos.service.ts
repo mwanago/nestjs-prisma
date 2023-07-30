@@ -39,8 +39,8 @@ export class VideosService {
     return videoMetadata;
   }
 
-  parseRange(range: string, size: number) {
-    const parseResult = rangeParser(size, range);
+  parseRange(range: string, fileSize: number) {
+    const parseResult = rangeParser(fileSize, range);
     if (parseResult === -1 || parseResult === -2 || parseResult.length !== 1) {
       throw new BadRequestException();
     }
@@ -62,12 +62,9 @@ export class VideosService {
 
     const stream = createReadStream(videoPath, { start, end });
 
-    const chunkSize = end - start + 1;
-
     const streamableFile = new StreamableFile(stream, {
       disposition: `inline; filename="${videoMetadata.filename}"`,
       type: videoMetadata.mimetype,
-      length: chunkSize,
     });
 
     const contentRange = `bytes ${start}-${end}/${fileSize}`;
