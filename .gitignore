@@ -37,3 +37,5 @@ lerna-debug.log*
 docker.env
 
 prisma/schema.prisma
+
+uploadedFiles

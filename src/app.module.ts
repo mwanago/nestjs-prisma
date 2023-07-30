@@ -5,6 +5,7 @@ import * as Joi from 'joi';
 import { AuthenticationModule } from './authentication/authentication.module';
 import { CategoriesModule } from './categories/categories.module';
 import { ProductsModule } from './products/products.module';
+import { VideosModule } from './videos/videos.module';
 
 @Module({
   imports: [
@@ -21,9 +22,11 @@ import { ProductsModule } from './products/products.module';
         JWT_SECRET: Joi.string().required(),
         JWT_EXPIRATION_TIME: Joi.string().required(),
         FRONTEND_URL: Joi.string(),
+        UPLOADED_FILES_DESTINATION: Joi.string().required(),
       }),
     }),
     ProductsModule,
+    VideosModule,
   ],
   controllers: [],
   providers: [],
