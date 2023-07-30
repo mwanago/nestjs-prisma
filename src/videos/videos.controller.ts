@@ -54,7 +54,7 @@ export default class VideosController {
       return this.videosService.getVideoStreamById(id);
     }
     const { streamableFile, contentRange } =
-      await this.videosService.getPartOfVideoStream(id, range);
+      await this.videosService.getPartialVideoStream(id, range);
 
     response.status(206);
 

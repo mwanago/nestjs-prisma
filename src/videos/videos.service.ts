@@ -57,7 +57,7 @@ export class VideosService {
     return `bytes ${rangeStart}-${rangeEnd}/${fileSize}`;
   }
 
-  async getPartOfVideoStream(id: number, range: string) {
+  async getPartialVideoStream(id: number, range: string) {
     const videoMetadata = await this.getVideoMetadata(id);
     const videoPath = join(process.cwd(), videoMetadata.path);
     const fileSize = await this.getFileSize(videoPath);
