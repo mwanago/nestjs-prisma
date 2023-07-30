@@ -6,8 +6,11 @@ import {
   BadRequestException,
   Get,
   Param,
+  Header,
+  Headers,
+  Res,
 } from '@nestjs/common';
-import { Express } from 'express';
+import { Express, Response } from 'express';
 import LocalFilesInterceptor from '../utils/localFiles.interceptor';
 import { VideosService } from './videos.service';
 import { FindOneParams } from '../utils/findOneParams';
@@ -41,7 +44,24 @@ export default class VideosController {
   }
 
   @Get(':id')
-  streamVideo(@Param() { id }: FindOneParams) {
-    return this.videosService.streamVideoById(id);
+  @Header('Accept-Ranges', 'bytes')
+  async streamVideo(
+    @Param() { id }: FindOneParams,
+    @Headers('range') range: string,
+    @Res({ passthrough: true }) response: Response,
+  ) {
+    if (!range) {
+      return this.videosService.streamVideoById(id);
+    }
+    const { streamableFile, contentRange } =
+      await this.videosService.streamPartOfVideo(id, range);
+
+    response.status(206);
+
+    response.set({
+      'Content-Range': contentRange,
+    });
+
+    return streamableFile;
   }
 }
