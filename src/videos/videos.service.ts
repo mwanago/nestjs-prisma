@@ -53,7 +53,11 @@ export class VideosService {
     return status.size;
   }
 
-  async streamPartOfVideo(id: number, range: string) {
+  getContentRange(rangeStart: number, rangeEnd: number, fileSize: number) {
+    return `bytes ${rangeStart}-${rangeEnd}/${fileSize}`;
+  }
+
+  async getPartOfVideoStream(id: number, range: string) {
     const videoMetadata = await this.getVideoMetadata(id);
     const videoPath = join(process.cwd(), videoMetadata.path);
     const fileSize = await this.getFileSize(videoPath);
@@ -67,7 +71,7 @@ export class VideosService {
       type: videoMetadata.mimetype,
     });
 
-    const contentRange = `bytes ${start}-${end}/${fileSize}`;
+    const contentRange = this.getContentRange(start, end, fileSize);
 
     return {
       streamableFile,
@@ -75,7 +79,7 @@ export class VideosService {
     };
   }
 
-  async streamVideoById(id: number) {
+  async getVideoStreamById(id: number) {
     const videoMetadata = await this.getVideoMetadata(id);
 
     const stream = createReadStream(join(process.cwd(), videoMetadata.path));

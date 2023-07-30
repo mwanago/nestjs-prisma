@@ -51,10 +51,10 @@ export default class VideosController {
     @Res({ passthrough: true }) response: Response,
   ) {
     if (!range) {
-      return this.videosService.streamVideoById(id);
+      return this.videosService.getVideoStreamById(id);
     }
     const { streamableFile, contentRange } =
-      await this.videosService.streamPartOfVideo(id, range);
+      await this.videosService.getPartOfVideoStream(id, range);
 
     response.status(206);
 
