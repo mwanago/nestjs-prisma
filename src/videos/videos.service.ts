@@ -6,7 +6,8 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { VideoDto } from './dto/video.dto';
-import { createReadStream, statSync } from 'fs';
+import { createReadStream } from 'fs';
+import { stat } from 'fs/promises';
 import { join } from 'path';
 import * as rangeParser from 'range-parser';
 
@@ -46,8 +47,8 @@ export class VideosService {
     return parseResult[0];
   }
 
-  getFileSize(path: string) {
-    const status = statSync(path);
+  async getFileSize(path: string) {
+    const status = await stat(path);
 
     return status.size;
   }
@@ -55,7 +56,7 @@ export class VideosService {
   async streamPartOfVideo(id: number, range: string) {
     const videoMetadata = await this.getVideoMetadata(id);
     const videoPath = join(process.cwd(), videoMetadata.path);
-    const fileSize = this.getFileSize(videoPath);
+    const fileSize = await this.getFileSize(videoPath);
 
     const { start, end } = this.parseRange(range, fileSize);
 
