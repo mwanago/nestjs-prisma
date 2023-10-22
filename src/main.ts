@@ -1,4 +1,4 @@
-import { NestFactory } from '@nestjs/core';
+import { NestFactory, Reflector } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { LogLevel, ValidationPipe, VersioningType } from '@nestjs/common';
 import * as cookieParser from 'cookie-parser';
@@ -23,7 +23,7 @@ async function bootstrap() {
     }),
   );
 
-  app.useGlobalInterceptors(new LoggerInterceptor());
+  app.useGlobalInterceptors(new LoggerInterceptor(app.get(Reflector)));
 
   app.enableVersioning({
     type: VersioningType.URI,

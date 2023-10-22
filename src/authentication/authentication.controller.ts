@@ -19,6 +19,8 @@ import JwtAuthenticationGuard from './jwt-authentication.guard';
 import { UserResponseDto } from '../users/dto/userResponseDto';
 import { plainToClass } from 'class-transformer';
 import { TransformDataInterceptor } from '../utils/transformData.interceptor';
+import { ParseRequestBodyWhenLogging } from '../utils/parseRequestBodyWhenLogging';
+import RegistrationRequestLoggingDto from './dto/registrationRequestLogging.dto';
 
 @Controller('authentication')
 @UseInterceptors(ClassSerializerInterceptor)
@@ -26,6 +28,7 @@ export class AuthenticationController {
   constructor(private readonly authenticationService: AuthenticationService) {}
 
   @Post('register')
+  @ParseRequestBodyWhenLogging(RegistrationRequestLoggingDto)
   async register(@Body() registrationData: RegisterDto) {
     return this.authenticationService.register(registrationData);
   }
